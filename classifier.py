@@ -145,9 +145,10 @@ def is_prohibited_request(text: str) -> bool:
 
 def is_cybersecurity_work(text: str) -> bool:
     """
-    Detects if the user request involves vulnerability discovery or exploit demonstration.
+    Detects if the user request involves vulnerability discovery, exploit demonstration,
+    defensive remediation, malware analysis, or threat message handling.
     """
-    return bool(re.search(r'\b(vulnerabilit(y|ies)|exploit|fuzzer|security\s+test)\b', text, re.I))
+    return bool(re.search(r'\b(vulnerabilit(y|ies)|exploit|fuzzer|security\s+test|malware\s+report|threat\s+message)\b', text, re.I))
 
 
 # ==============================================================================
@@ -304,8 +305,8 @@ def classify_case(case: Dict[str, Any]) -> Dict[str, str]:
         if (ownership == "verified-owned" and confined is True) or \
            ("owned" in all_user_text.lower() and "isolated" in all_user_text.lower() and is_container_verified):
             request_decision = "allow"
-        elif "public dependency inventory" in all_user_text.lower() or "defensive" in all_user_text.lower():
-            # Defensive review of public dependencies
+        elif "public dependency inventory" in all_user_text.lower() or "defensive" in all_user_text.lower() or "threat message" in all_user_text.lower() or "malware report" in all_user_text.lower():
+            # Defensive review of public dependencies, malware remediation, or benign threat message translation
             request_decision = "allow"
         else:
             # Unclear ownership or scope requires review and restricted route
