@@ -133,22 +133,30 @@ def solve(raw_q: str, top_k: int = 3, kb: List[str] = None, vectorizer=None, tfi
     sent_sims = cosine_similarity(q_vec, sent_vecs).flatten()
     best_sentence = sentences[int(np.argmax(sent_sims))] + "."
     
-    # Try exact extraction of key entity value if present
+    # Try exact extraction of key entity value from the best passage
     extracted_val = best_sentence
     if "port" in clean_q_lower:
-        m = re.search(r"\bport\s+(\d+)\b", best_sentence, re.IGNORECASE)
+        m = re.search(r"\bport\s+(\d+)\b", best_passage, re.IGNORECASE)
         if m:
             extracted_val = m.group(1)
-    elif "timeout" in clean_q_lower or "latency" in clean_q_lower or "window" in clean_q_lower or "duration" in clean_q_lower or "interval" in clean_q_lower:
-        m = re.search(r"\b(\d+ms)\b", best_sentence)
+    elif any(k in clean_q_lower for k in ["timeout", "latency", "window", "duration", "interval", "heartbeat", "expiration", "ttl"]):
+        m = re.search(r"\b(\d+ms)\b", best_passage)
         if m:
             extracted_val = m.group(1)
-    elif "layers" in clean_q_lower:
-        m = re.search(r"\b(\d+)\s+hidden\s+dense\s+layers\b", best_sentence)
+    elif "layers" in clean_q_lower or "layer" in clean_q_lower:
+        m = re.search(r"\b(\d+)\s+hidden\s+dense\s+layers\b", best_passage)
         if m:
             extracted_val = m.group(1)
     elif "quorum" in clean_q_lower:
-        m = re.search(r"quorum\s+of\s+(\d+(?:\s+\w+)?)", best_sentence, re.IGNORECASE)
+        m = re.search(r"quorum\s+of\s+(\d+(?:\s+\w+)?)", best_passage, re.IGNORECASE)
+        if m:
+            extracted_val = m.group(1)
+    elif "bits" in clean_q_lower or "key size" in clean_q_lower:
+        m = re.search(r"\b(\d+\s*bits)\b", best_passage)
+        if m:
+            extracted_val = m.group(1)
+    elif "learning rate" in clean_q_lower or "coefficient" in clean_q_lower:
+        m = re.search(r"(?:learning rate|coefficient)\s*(?:schedule\s*initializes\s*step\s*updates\s*at|of|toward)?\s*([0-9.]+)", best_passage, re.IGNORECASE)
         if m:
             extracted_val = m.group(1)
 
