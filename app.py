@@ -52,12 +52,14 @@ async def health():
 
 
 @app.get("/classify")
+@app.head("/classify")
 async def classify_get():
     """Returns configuration object required by Check/Save."""
     return JSONResponse(content=CONFIG_DATA, status_code=200, media_type="application/json")
 
 
 @app.get("/")
+@app.head("/")
 async def root(request: Request):
     """
     Returns HTML page for browser visitors, or JSON configuration for API clients.
