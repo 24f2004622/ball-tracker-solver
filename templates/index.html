@@ -127,11 +127,17 @@
             <div class="font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-2">
                 <i class="fa-solid fa-terminal text-amber-400"></i> cURL / REST API Usage
             </div>
-            <pre class="bg-slate-950 p-3 rounded-lg font-mono text-slate-300 overflow-x-auto text-[11px] border border-slate-800">curl -X POST -F "video=@ball-tracker.webm" -F "frames=182,300,521" https://YOUR-RENDER-URL.onrender.com/api/solve</pre>
+            <pre id="curlExample" class="bg-slate-950 p-3 rounded-lg font-mono text-slate-300 overflow-x-auto text-[11px] border border-slate-800 select-all">curl.exe -X POST -F "video=@ball-tracker.webm" -F "frames=182,300,521" https://ball-tracker-solver.onrender.com/api/solve</pre>
+            <p class="text-[11px] text-slate-500">Note: On Windows PowerShell, use <code>curl.exe</code> (instead of <code>curl</code>) so PowerShell runs the actual cURL utility.</p>
         </footer>
     </div>
 
     <script>
+        // Dynamically update the cURL snippet to match the actual current origin
+        const currentOrigin = window.location.origin;
+        const curlSnippet = `curl.exe -X POST -F "video=@ball-tracker.webm" -F "frames=182,300,521" ${currentOrigin}/api/solve`;
+        document.getElementById('curlExample').textContent = curlSnippet;
+
         const dropzone = document.getElementById('dropzone');
         const videoInput = document.getElementById('videoInput');
         const dropzonePrompt = document.getElementById('dropzonePrompt');
