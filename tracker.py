@@ -230,7 +230,9 @@ def track_and_solve(video_path, target_frames=[182, 300, 521]):
             # Hungarian matching
             cost = np.linalg.norm(current_tracks[:, None, :] - pts[None, :, :], axis=2)
             row_ind, col_ind = linear_sum_assignment(cost)
-            current_tracks = pts[col_ind]
+            new_tracks = current_tracks.copy()
+            new_tracks[row_ind] = pts[col_ind]
+            current_tracks = new_tracks
         
         if f in target_set:
             p = current_tracks[red_idx]
